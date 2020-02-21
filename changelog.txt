@@ -1,0 +1,9 @@
+Otakuball v8.0.3 January 17, 2017
+
+Changelog:
+	-Added eyedropper tool
+	-Added tool tooltips
+	-Fixed the editor error (i think)
+	-Added the "Board Saved" sound
+	-Transform and Terraform no longer affect Strong Flip Bricks
+	-One Way Bricks are now opaque in the presence of tiled backgrounds
