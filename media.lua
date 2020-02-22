@@ -418,19 +418,12 @@ loadImage("button_icon"            , "media/otakuballEditorUIicons2.png")
 loadImage("quit_icon"              , "media/quitbuttonicon.png")
 
 loadImage("powerup_spritesheet"    , "media/OtakuBallPowerupsSpritesheet.png")
-loadImage("powerup_score"          , "media/OtakuBallPowerupPickupScoreValues.png")
-loadImage("powerup_score_double"   , "media/OtakuBallPowerupPickupScoreValuesJewel.png")
-loadImage("powerup_score_half"     , "media/OtakuBallPowerupPickupScoreValuesJunk.png")
 loadImage("powerup_score_small"    , "media/OtakuBallScoreSmall.png")
 
 loadImage("ball_nova"              , "media/NovaBallSprite.png")
 loadImage("ball_spritesheet"       , "media/Characters.png")
 loadImage("ball_spritesheet_new"   , "media/new_balls.jpg")
-loadImage("ball_powerup"           , "media/OtakuBallPowerUpandPowerDown.png")
-loadImage("ball_large"             , "media/OtakuballLarge.png")
 loadImage("ball_giga"              , "media/GigaBallForcefield.png")
-loadImage("ball_mini"              , "media/OtakuBallInactiveBall.png")
-loadImage("ball_parachute"         , "media/OtakuBallParachute.png")
 loadImage("ball_parachute2"        , "media/OtakuBallParachuteRedone.png")
 loadImage("invert"                 , "media/OtakuBallInvertForcefield.png")
 
@@ -488,7 +481,6 @@ loadImage("explosion"              , "media/ExplosionBlockBlast.png")
 loadImage("explosion_smoke"        , "media/ExplosionSmoke.png")
 loadImage("explosion_smoke_freeze" , "media/ExplosionSmokeFreeze.png")
 loadImage("explosion_smoke_mega"   , "media/ExplosionSmokeMega.png")
--- loadImage("rapidfire_bullet"       , "media/OtakuBallRapidFireProjectileSprite.png")
 loadImage("shotgun_pellet"         , "media/OtakuBallShotgunSprite.png")
 loadImage("comet"                  , "media/CometArrows.png")
 loadImage("comet_ember"            , "media/OtakuBallCometBlockEmber.png")
@@ -679,7 +671,13 @@ loadSound("small"            , "audio/powerup/ricochet/Small Ball.wav")
 loadSound("triggerdeton"     , "audio/powerup/ricochet/T Detonator and T Launcher Turned Off.wav")
 loadSound("triggerdetoff"    , "audio/powerup/ricochet/T Detonator and T Launcher Turned On.wav")
 
-
+loadSound("fireblossom"      , "audio/new/Blossom Fire.wav")
+loadSound("controlcollected" , "audio/new/Control and Nebula Pickup.wav")
+loadSound("shadowpaddlehit"  , "audio/new/Intelligent Shadow Paddle Hits Ball.wav")
+loadSound("oneup2"           , "audio/new/Player Pickup.wav")
+loadSound("probeapply"       , "audio/new/Probe Apply to Ball.wav")
+loadSound("rocketcollected"  , "audio/new/Rocket Pickup.wav")
+loadSound("zencollected"     , "audio/new/Zen Shove Pickup.wav")
 
 
 --quads are required to be tied to an image

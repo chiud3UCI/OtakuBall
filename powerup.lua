@@ -360,6 +360,7 @@ f[135] = function() --Zen Shove
 	local paddle = game.paddle
 	paddle:clearPowerups()
 	paddle.flag.zenShove = true
+	playSound("zencollected")
 end
 
 f[93] = function() --Re-Serve
@@ -495,6 +496,7 @@ f[20] = function() --Control
 		self.value = paddle.controlCooldown
 	end
 	monitorManager:add(m)
+	playSound("controlcollected")
 end
 
 f[96] = function() --Rocket
@@ -503,6 +505,7 @@ f[96] = function() --Rocket
 	paddle.imgstr = "paddle_powerup"
 	paddle.rect = rects.paddle[1]
 	paddle.flag.rocket = "ready"
+	playSound("rocketcollected")
 end
 
 f[65] = function() --Magnet
@@ -1624,7 +1627,7 @@ end
 
 f[83] = function() --Player
 	playstate.lives = playstate.lives + 1
-	playSound("oneup")
+	playSound("oneup2")
 end
 
 f[53] = function() --Junk
@@ -2133,6 +2136,7 @@ f[72] = function() --Nebula
 		self.value = nebula.timer
 	end
 	monitorManager:add(m)
+	playSound("controlcollected")
 end
 
 f[49] = function() --Intelligent Shadow
@@ -2169,6 +2173,8 @@ f[49] = function() --Intelligent Shadow
 					ball:scaleVelToSpeed(spd)
 
 					ball:onPaddleHit(self)
+
+					playSound("shadowpaddlehit")
 				end
 			end
 		end

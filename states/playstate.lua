@@ -52,6 +52,7 @@ menacerButton = {
 	rect1 = make_rect(0, 12, 36, 12), 
 	rect2 = make_rect(0, 24, 36, 12)
 }
+
 --menacerButton = Sprite:new("ball_spritesheet", make_rect(0, 12, 36, 24), 90, 60, 100, 300)
 function menacerButton:containPoint(x, y)
 	return x > self.x and

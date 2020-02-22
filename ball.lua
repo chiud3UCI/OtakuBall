@@ -338,6 +338,7 @@ function Ball:update(dt)
 				self.blossomBurst = 3
 				self.blossomCd = 0
 				self.blossomPos = {self.x, self.y}
+				playSound("controlcollected")
 			end
 			self.blossomOrbitTimer = self.blossomOrbitTimer + dt
 			local timer = self.blossomOrbitTimer
@@ -1389,6 +1390,7 @@ function Ball:attachProbe(probe)
 	probe.attach = self
 	self.probeAttached = true
 	game.paddle.probes[probe] = nil
+	playSound("probeapply")
 end
 
 function Ball:releaseProbe()
