@@ -425,6 +425,7 @@ function Brick:draw()
 	end
 end
 
+--move within a certain time
 function Brick:moveTo(x, y, time, funcstr)
 	funcstr = funcstr or "null"
 	self.isMoving = true
@@ -436,6 +437,7 @@ function Brick:moveTo(x, y, time, funcstr)
 	self.moveCheck = Brick.moveCheck[funcstr]
 end
 
+--move at a certain speed
 function Brick:moveTo2(x, y, spd, funcstr)
 	funcstr = funcstr or "null"
 	self.isMoving = true
@@ -490,7 +492,7 @@ Brick.moveCheck =
 			end
 		end
 	end,
-	bounce = function(self) --bounces off of bricks
+	shovedet = function(self) --special shove detonator brick behavior
 		local i, j = getGridPos(self:getPos())
 		local border = i == 1 or i == 32 or j == 1 or j == 13
 		local bucket = playstate:getBrickBucket(self)
@@ -499,9 +501,29 @@ Brick.moveCheck =
 			if br ~= self then
 				local box2 = {br.shape:bbox()}
 				if util.bboxOverlap(box1, box2) and not br.isMoving then
-					local a, b = self.bounceDir[1], self.bounceDir[2]
-					local x, y = getGridPosInverse(i+a, j+b)
-					self:moveTo2(x, y, 500, "bounce")
+					--bounce towards the closest avaliable free space
+					local valid = self.shoveValid
+					local valid2 = {}
+					local minDist = math.huge
+					for hash, _ in pairs(valid) do
+						local row, col = util.gridHashInv(hash)
+						local dist = (i - row) ^ 2 + (j - col) ^ 2
+						minDist = math.min(minDist, dist)
+						valid2[hash] = dist
+					end
+					local candidates = {}
+					for hash, dist in pairs(valid2) do
+						if dist == minDist then
+							table.insert(candidates, hash)
+						end
+					end
+					if #candidates == 0 then self:kill() end --this should almost never happen
+					local hash = candidates[math.random(#candidates)]
+					valid[hash] = nil --prevent other shoved blocks from going here
+					local row, col = util.gridHashInv(hash)
+					local x, y = getGridPosInverse(row, col)
+					self:moveTo2(x, y, 500, "die")
+					self.shoveValid = nil
 					self.drawPriority = 2
 					game.sortflag = true
 					break

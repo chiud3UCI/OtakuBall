@@ -423,6 +423,8 @@ function PlayState:initialize(mode, filename, zones)
 
 	activateAllBricks() --from bricks\_init
 
+	self.remainingBricks = 0
+
 	--self.mouseProtect = true 
 end
 
@@ -821,8 +823,9 @@ function PlayState:update(dt)
 	Brick.manageMovement()
 
 	--check for victory condition
+	self.remainingBricks = self:countRemainingBricks()
 	if self.mode == "play" and self.state ~= "victory" and self.state ~= "zoneselect" then
-		if self:checkVictory() then
+		if self.remainingBricks == 0 then
 			self:setVictory()
 		end
 	end
@@ -955,13 +958,14 @@ function PlayState:brickCascade(br1, movingBricks, axis, sign) --make it recursi
 	end
 end
 
-function PlayState:checkVictory(debug)
+function PlayState:countRemainingBricks()
+	local remaining = 0
 	for _, br in pairs(game.bricks) do
 		if br.essential and not br.patch.invisible then
-			return false 
+			remaining = remaining + 1
 		end
 	end
-	return true
+	return remaining
 end
 
 function PlayState:setVictory()
@@ -1043,9 +1047,14 @@ function PlayState:draw()
 		self.quitButton:draw()
 	end
 
+	--state indicator
 	legacySetColor(0, 0, 0)
 	love.graphics.setFont(font["Arcade20"])
 	love.graphics.print(self.state, 10, window.h-60)
+	--remaining bricks indicator
+	local r = self.remainingBricks
+	love.graphics.setFont(font["Windows16"])
+	love.graphics.print("Remaining Bricks: "..r, 10, window.h - 80)
 
 	--score drawing
 	if drawscore then

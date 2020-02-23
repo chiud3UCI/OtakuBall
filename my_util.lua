@@ -157,6 +157,18 @@ function util.containPoint(box, x, y)
 	return x >= box[1] and x <= box[3] and y >= box[2] and y <= box[4]
 end
 
+--very simple hash for grid coordinates
+--(assume each integer will never exceed 99)
+function util.gridHash(row, col)
+	return (row*100) + col
+end
+
+function util.gridHashInv(hash)
+	local row = math.floor(hash/100)
+	local col = hash % 100
+	return row, col
+end
+
 Stack = class("Stack")
 
 function Stack:initialize(list)
