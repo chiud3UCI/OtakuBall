@@ -44,6 +44,7 @@ function ShoveDetonatorBrick:onDeath()
 								--shoveValid will be shared across all bricks
 								--this can prevent bricks from bouncing
 								--to the same location
+								valid[util.gridHash(row, col)] = nil
 								local x, y = getGridPosInverse(row, col)
 								br:moveTo2(x, y, 500, "shovedet")
 								br.shoveValid = valid

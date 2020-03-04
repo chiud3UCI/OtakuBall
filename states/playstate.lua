@@ -93,6 +93,20 @@ function enemyButton:draw()
 	draw("enemy_editor", nil, self.x + self.w/2, self.y + self.h/2, 0, self.w, self.h)
 end
 
+enemyButton2 = {
+	x = 10+96,
+	y = 160+45,
+	w = 24,
+	h = 24
+}
+
+enemyButton2.containPoint = menacerButton.containPoint
+
+function enemyButton2:draw()
+	love.graphics.setColor(0, 1, 0, 1)
+	love.graphics.circle("fill", self.x + self.w/2, self.y + self.h/2, self.h/2)
+end
+
 
 function PlayState:loadBricks(filename)
 	local chunk = nil
@@ -492,6 +506,8 @@ function PlayState:update(dt)
 					spawnEnemy(menacerButton:getMenacerType(mx, my))
 				elseif enemyButton:containPoint(mx, my) then
 					spawnEnemy(enemyButton:getEnemyType(mx, my))
+				elseif enemyButton2:containPoint(mx, my) then
+					spawnEnemy("dropball")
 				end
 			end
 		end
@@ -1030,6 +1046,7 @@ function PlayState:draw()
 		legacySetColor(255, 255, 255, 255)
 		menacerButton:draw()
 		enemyButton:draw()
+		enemyButton2:draw()
 
 		self.noPitButton:draw()
 		self.enemyDebugButton:draw()

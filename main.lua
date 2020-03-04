@@ -68,7 +68,7 @@ cheats = {
 }
 
 --disable this in order to get better error messages
-require("lovedebug")
+-- require("lovedebug")
 
 class = require("middleclass")
 require("my_util")

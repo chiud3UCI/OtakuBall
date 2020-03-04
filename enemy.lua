@@ -121,6 +121,7 @@ function enemySpawner:spawnEnemy(enemyType)
 		cubic = Cubic,
 		gumballtrio = GumballTrio,
 		walkblock = WalkBlock,
+		dropball = DropBall,
 	}
 	local enemyClass = lookup[enemyType]
 	local enemy = nil
@@ -1062,4 +1063,101 @@ function WalkBlock:draw()
 		love.graphics.print(self.prevRow, self.x - 30, self.y)
 	end
 	self.x, self.y = stox, stoy
+end
+
+--Drop Ball
+
+DropBall = class("DropBall", Enemy)
+DropBall.spd = 50
+
+function DropBall:initialize()
+	Enemy.initialize(self, nil, nil, 40, 40, 0, 0, 0, DropBall.spd)
+	self.r = 20
+	self:setShape(shapes.newCircleShape(0, 0, self.r))
+
+	self.dropState = "float"
+	self.dropTimer = 3
+
+	self.gameType = "dropball"
+end
+
+DropBall.validCollision = Projectile.validCollision
+DropBall.handleCollision = Projectile.handleCollision
+
+--should bounce off balls too
+function DropBall:onBallHit(ball, norm)
+	ball:onEnemyHit(self, norm)
+	-- self:translate(norm.x, norm.y)
+	-- self:handleCollision(-norm.x, -norm.y)
+end
+
+function DropBall:onProjectileHit(proj, norm)
+	proj:onEnemyHit(self, norm)
+end
+
+function DropBall:onPaddleHit(paddle)
+	if self.vy > 0 then
+		self.vy = -self.vy
+	end
+end
+
+function DropBall:update(dt)
+	self.dropTimer = self.dropTimer - dt
+	if self.dropTimer <= 0 then
+		if self.dropState == "float" then
+			--add gravity
+			self.dropState = "drop"
+			self.ay = 1000
+			self.dropTimer = 1
+		else
+			--slow down and get rid of gravity
+			self.dropState = "float"
+			self.ay = 0
+			self:scaleVelToSpeed(DropBall.spd)
+			self.dropTimer = 3
+		end
+	end
+
+	-- DropBall just bounces off bricks;
+	-- does not affect the brick in any way
+	local check, norm, brick = self:scanBrickHit()
+	if check then
+		self:translate(norm.x, norm.y)
+		self:handleCollision(norm.x, norm.y)
+	end
+	local x, y = self:getPos()
+	local r = self.r
+	if x - r < window.lwallx  then self:handleCollision( 1,  0) end
+	if x + r > window.rwallx  then self:handleCollision(-1,  0) end
+	if y - r < window.ceiling then self:handleCollision( 0,  1) end
+
+	--DropBall also bounces off DropBalls
+	for i, e in ipairs(game.enemies) do
+		if e.gameType == "dropball" then
+			local check, mtvx, mtvy = self.shape:collidesWith(e.shape)
+			if check then
+				local nx, ny = mtvx, mtvy
+				if self:validCollision(nx, ny) then
+					self:handleCollision(nx, ny)
+				end
+				if e:validCollision(-nx, -ny) then
+					e:handleCollision(-nx, -ny)
+				end
+			end
+		end
+	end
+
+
+	Enemy.update(self, dt)
+end
+
+function DropBall:draw()
+	love.graphics.setScissor(0, window.ceiling - 16, window.w, window.h)
+	if self.dropState == "float" then
+		love.graphics.setColor(0, 1, 0, 1)
+	else
+		love.graphics.setColor(1, 0, 0, 1)
+	end
+	love.graphics.circle("fill", self.x, self.y, self.r)
+	love.graphics.setScissor()
 end
