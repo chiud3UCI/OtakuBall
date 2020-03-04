@@ -1075,7 +1075,7 @@ function DropBall:initialize()
 	self.r = 20
 	self:setShape(shapes.newCircleShape(0, 0, self.r))
 
-	self.dropState = "float"
+	self.dropState = "initial" --float, drop
 	self.dropTimer = 3
 
 	self.gameType = "dropball"
@@ -1102,46 +1102,53 @@ function DropBall:onPaddleHit(paddle)
 end
 
 function DropBall:update(dt)
-	self.dropTimer = self.dropTimer - dt
-	if self.dropTimer <= 0 then
-		if self.dropState == "float" then
-			--add gravity
-			self.dropState = "drop"
-			self.ay = 1000
-			self.dropTimer = 1
-		else
-			--slow down and get rid of gravity
+	if self.dropState == "initial" then
+		if self.y - self.r > window.ceil then
+			local vx, vy = util.rotateVec(0, DropBall.spd, math.random(-45, 45))
+			self:setVel(vx, vy)
 			self.dropState = "float"
-			self.ay = 0
-			self:scaleVelToSpeed(DropBall.spd)
-			self.dropTimer = 3
 		end
-	end
+	else
+		self.dropTimer = self.dropTimer - dt
+		if self.dropTimer <= 0 then
+			if self.dropState == "float" then
+				--add gravity
+				self.dropState = "drop"
+				self.ay = 1000
+				self.dropTimer = 1
+			else
+				--slow down and get rid of gravity
+				self.dropState = "float"
+				self.ay = 0
+				self:scaleVelToSpeed(DropBall.spd)
+				self.dropTimer = 3
+			end
+		end
+		-- DropBall just bounces off bricks;
+		-- does not affect the brick in any way
+		local check, norm, brick = self:scanBrickHit()
+		if check then
+			self:translate(norm.x, norm.y)
+			self:handleCollision(norm.x, norm.y)
+		end
+		local x, y = self:getPos()
+		local r = self.r
+		if x - r < window.lwallx  then self:handleCollision( 1,  0) end
+		if x + r > window.rwallx  then self:handleCollision(-1,  0) end
+		if y - r < window.ceiling then self:handleCollision( 0,  1) end
 
-	-- DropBall just bounces off bricks;
-	-- does not affect the brick in any way
-	local check, norm, brick = self:scanBrickHit()
-	if check then
-		self:translate(norm.x, norm.y)
-		self:handleCollision(norm.x, norm.y)
-	end
-	local x, y = self:getPos()
-	local r = self.r
-	if x - r < window.lwallx  then self:handleCollision( 1,  0) end
-	if x + r > window.rwallx  then self:handleCollision(-1,  0) end
-	if y - r < window.ceiling then self:handleCollision( 0,  1) end
-
-	--DropBall also bounces off DropBalls
-	for i, e in ipairs(game.enemies) do
-		if e.gameType == "dropball" then
-			local check, mtvx, mtvy = self.shape:collidesWith(e.shape)
-			if check then
-				local nx, ny = mtvx, mtvy
-				if self:validCollision(nx, ny) then
-					self:handleCollision(nx, ny)
-				end
-				if e:validCollision(-nx, -ny) then
-					e:handleCollision(-nx, -ny)
+		--DropBall also bounces off DropBalls
+		for i, e in ipairs(game.enemies) do
+			if e.gameType == "dropball" then
+				local check, mtvx, mtvy = self.shape:collidesWith(e.shape)
+				if check then
+					local nx, ny = mtvx, mtvy
+					if self:validCollision(nx, ny) then
+						self:handleCollision(nx, ny)
+					end
+					if e:validCollision(-nx, -ny) then
+						e:handleCollision(-nx, -ny)
+					end
 				end
 			end
 		end
@@ -1153,10 +1160,10 @@ end
 
 function DropBall:draw()
 	love.graphics.setScissor(0, window.ceiling - 16, window.w, window.h)
-	if self.dropState == "float" then
-		love.graphics.setColor(0, 1, 0, 1)
-	else
+	if self.dropState == "drop" then
 		love.graphics.setColor(1, 0, 0, 1)
+	else
+		love.graphics.setColor(0, 1, 0, 1)
 	end
 	love.graphics.circle("fill", self.x, self.y, self.r)
 	love.graphics.setScissor()
